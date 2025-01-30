@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour
     private bool canFire = true;
     private bool isInvulnerable = false;
 
+    public Equipment equipmentSlot1 = null;
+    public Equipment equipmentSlot2 = null;
+
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float interactRange = 7f;
 
@@ -34,6 +37,23 @@ public class PlayerController : MonoBehaviour
             playerRb.linearVelocity = input.normalized * playerStats.playerSpeed;
         }
         interactables = FindObjectsByType<Interactable>(FindObjectsSortMode.None);
+    }
+
+    private void TryUseEquipment(Equipment equip)
+    {
+        if (equip != null && equip.CanUseAbility(playerStats.money))
+        {
+            equip.ActivateAbility(gameObject, playerStats);
+        }
+    }
+
+    public void OnEquipment1()
+    {
+        TryUseEquipment(equipmentSlot1);
+    }
+    public void OnEquipment2()
+    {
+        TryUseEquipment(equipmentSlot2);
     }
 
     public void OnMove(InputValue value)

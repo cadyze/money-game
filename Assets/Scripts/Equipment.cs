@@ -9,6 +9,8 @@ public class Equipment : ScriptableObject
     public Sprite equipmentImage;
     public float abilityDuration;
     public float cooldownTime;
+    public int costToUse;
+
     [TextArea] public string equipmentDescription;
 
     [Header("Ability")]
@@ -16,13 +18,26 @@ public class Equipment : ScriptableObject
 
     private bool isOnCooldown = false;
 
-    public void ActivateAbility(GameObject user)
+    public bool CanUseAbility(int playerMoney)
     {
         if (isOnCooldown)
         {
-            Debug.Log("Ability is on cooldown!");
-            return;
+            Debug.Log($"{equipmentName} is on cooldown!");
+            return false;
         }
+
+        if (costToUse > playerMoney)
+        {
+            Debug.Log($"{equipmentName} is too expensive!");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void ActivateAbility(GameObject user, PlayerStats pStats)
+    {
+        pStats.money -= costToUse;
 
         PlayerController player = user.GetComponent<PlayerController>();
         PlayerStats stats = user.GetComponent<PlayerStats>();
